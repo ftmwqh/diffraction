@@ -1,0 +1,135 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <title>衍射</title>
+  </head>
+  <body>
+    <div align="center"><font size="+2">PYTHON模拟弗朗和费矩孔衍射和菲涅尔圆孔衍射<br>
+        物理学院&nbsp; PB20020580 王启骅</font><br>
+      <div align="left">&nbsp; <font size="+1">1.科学技术原理</font><br>
+        &nbsp;我在这个学期学习了光学这门课，所以就选择用python模拟弗朗和费矩孔衍射和菲涅尔圆孔衍射。弗朗和费矩孔衍射的物理原
+        理就是用一束平行的单色光垂直
+        入射到衍射屏上的矩形小孔，在衍射屏上发生衍射后光线继续传播经过衍射屏后方放置的凸透镜，将入射的平行光线汇聚在放置于凸透镜后方与焦
+        面重合处的观察屏上，于是就可以得到衍射图样。菲涅尔圆孔衍射的基本原理是R处的点光源发出单色光，在衍射屏的圆孔上衍射，其子波传播到
+        距离b处的观察屏处，产生衍射条纹。我同样是通
+        过积分的方法实现。最后作出衍射的光强与振幅分布图，可以直观地看到相应的衍射孔尺寸、光波波长等参数对应的相应的衍射情况。在做实验时，设计实验装置时
+        往往需要先用计算机模拟。我们可以根据计算机绘制的衍射图样，设计出我们需要的衍射屏等实验所需条件、情况。这类问题基本都可以用
+        comsol、matlab等软件解决，但是用python自己编程会有更高的设计自由空间。<br>
+        <br>
+        <font size="+1">2.设计方案<br>
+          2.1弗朗和费矩孔衍射<br>
+        </font>1.在这里衍射过程我是通过积分过程完成的，在观察屏上的坐标为<math
+          xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext>（</mtext><msub><mi>x</mi><mn>1</mn></msub><mo>,</mo><msub><mi>y</mi><mn>1</mn></msub><mo
+                stretchy="false">)</mo></mrow><annotation encoding="TeX">（
+              x_1,y_1)</annotation></semantics></math>处的振幅即
+        为&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>A</mi><mo
+                stretchy="false">(</mo><msub><mi>x</mi><mn>1</mn></msub><mo>,</mo><msub><mi>y</mi><mn>1</mn></msub><mo
+                stretchy="false">)</mo><mo>=</mo><mi>C</mi><msubsup><mo>∫</mo><mrow><mo>−</mo><mi>a</mi><mo>/</mo><mn>2</mn></mrow><mrow><mi>a</mi><mo>/</mo><mn>2</mn></mrow></msubsup><msubsup><mo>∫</mo><mrow><mo>−</mo><mi>b</mi><mo>/</mo><mn>2</mn></mrow><mrow><mi>b</mi><mo>/</mo><mn>2</mn></mrow></msubsup><mi>c</mi><mi>o</mi><mi>s</mi><mo
+                stretchy="false">(</mo><mi>k</mi><mi
+                mathvariant="normal">Δ</mi><mi>L</mi><mo
+                stretchy="false">)</mo><mi>d</mi><mi>x</mi><mi>d</mi><mi>y</mi></mrow><annotation
+              encoding="TeX">A(x_1,y_1)=C∫_{-a/2}^{a/2}∫_{-b/2}^{b/2}cos(k\DeltaL)dxdy</annotation></semantics></math>&nbsp;&nbsp;
+
+
+
+
+
+        在这里我们关心的主要是振幅相对强度的分布，所以不需要在意常数C的取值。那么可以得到光强的分布情况
+        为&nbsp;&nbsp;&nbsp;&nbsp;
+        <math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>I</mi><mo
+                stretchy="false">(</mo><msub><mi>x</mi><mn>1</mn></msub><mo>,</mo><msub><mi>y</mi><mn>1</mn></msub><mo
+                stretchy="false">)</mo><mo>=</mo><msup><mi>A</mi><mn>2</mn></msup><mo
+                stretchy="false">(</mo><msub><mi>x</mi><mn>1</mn></msub><mo>,</mo><msub><mi>y</mi><mn>1</mn></msub><mo
+                stretchy="false">) </mo></mrow><annotation
+              encoding="TeX">I(x_1,y_1)=A^2(x_1,y_1)</annotation></semantics></math><br>
+      </div>
+      <div align="left">2.首先我定义了类Lightwave，即是一束光波，所需要的参数分别是他的振幅A和波矢k，而在引
+        用时 所需要的参数是光传播的光程L，返回的是光在此处的振动情况&nbsp;&nbsp;
+        <math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>A</mi><mo>*</mo><mi>c</mi><mi>o</mi><mi>s</mi><mo
+                stretchy="false">(</mo><mi>k</mi><mo>*</mo><mi>L</mi><mo
+                stretchy="false">)</mo></mrow><annotation encoding="TeX">A*cos(k*L)</annotation></semantics></math>&nbsp;&nbsp;
+
+
+
+
+
+        。<br>
+        3.接下来我定义了计算光程的函数delta_L（x,y,x_1,y_1,f)，参数依次为衍射屏上的坐标（x,y)，观察屏上的坐标
+        （x_1,y_1)，凸透镜的焦距f。根据如图矢量计算可以得到光程&nbsp;&nbsp;
+        <math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>L</mi><mo>=</mo><mo>−</mo><mi>x</mi><mfrac><msub><mi>x</mi><mn>1</mn></msub><msqrt><mrow><msubsup><mi>x</mi><mn>1</mn><mn>2</mn></msubsup><mo>+</mo><msup><mi>f</mi><mn>2</mn></msup></mrow></msqrt></mfrac><mo>−</mo><mi>y</mi><mfrac><msub><mi>y</mi><mn>1</mn></msub><msqrt><mrow><msubsup><mi>y</mi><mn>1</mn><mn>2</mn></msubsup><mo>+</mo><msup><mi>f</mi><mn>2</mn></msup></mrow></msqrt></mfrac></mrow><annotation
+              encoding="TeX">L=-x\frac{x_1}{\sqrt{x_1^2+f^2}}-y\frac{y_1}{\sqrt{y_1^2+f^2}}</annotation></semantics></math>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+
+
+
+        <div align="center"><img
+            src="file:///C:/Users/wqh/Desktop/PB20020580/images/1638427685742.jpg"
+            alt="" moz-do-not-send="true" align="right" width="342"
+            height="211"></div>
+        4.接下来我定义了光在观察屏上某位置处的振幅和光强的函数ample_and_I(x_1,y_1,x,y,f,x0,y0)参数与上
+        述函数相同。在
+        这里我先定义了两个空列表a,I用于记录(x_1,y_1)处的振幅和光强，又定义了一个I_0用于记录最大光强。之后我通过循环衍射屏
+        上的坐标，在循环中对衍射屏上(x,y)处的光在(x_1,y_1)处振幅进行求和得到了衍射屏上各位置处的振幅，并同时对其平方得到该
+        处的光强，并在循环中筛选出最大的光强I_0,最后返回(x_1,y_1)处相对振幅和相对光强。<br>
+        5.我定义了矩孔衍射函数
+        square_diffraction(a,b,f，x0,y0),参数分别为矩孔的长，宽和透镜焦距，x0,y0为衍射矩孔中心在衍射屏上坐标位置。在
+        函数中我分别建立了x,y,x_1,y_1
+        的序列，并基于此创建了衍射屏和观察屏上的网格。之后再带入ample_and_I函数，用matplotlib绘出关于x_1,y_1
+        的图像即可得到夫琅禾费矩孔衍射的相对振幅和光强的分布情况。<br>
+        6.最后为了更直观的看出衍射屏上的条纹分布情况，我调用了PIL函数库，对得到的光强分布矩阵绘制成灰度图，之后为了提高明暗条纹对比
+        度再经过二值化得到条纹图像。<br>
+        <img moz-do-not-send="true" src="images/Figure_1.png" alt=""
+          align="left" width="585" height="289">为方便演示，在程序中我已经带入函数（矩孔尺寸为
+        20um的正方形，透镜焦距5mm,已设定入射光波长600nm)结果如图所示（彩色是加上等高线以更方便观察，光源本身是单色）<br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <font size="+1">2.2菲涅尔圆孔衍射</font><br>
+        <br>
+        1.菲涅尔圆孔衍射实现原理与矩孔衍射基本相似，不同之处在于此处圆形孔难以生成，于是我在这里构建了一个示性函数
+        chara_fun(r,rho)参数r是衍射屏上位点到原点的距离，rho是圆孔半径，r&gt;rho时返回0，r&lt;rho时
+        返回1。<br>
+        2.之后我又重新定义了另一个类Lightwave_point来模拟点光源发出的光波。引用Lightwave_point时参数
+        L为光程，r为点光源在衍射屏上距离原点的距离，rho为圆孔半径，s是子波源到观察屏的距离，由于是点光源入射，返回振幅是与s成反
+        比，并且要乘以所创建的示性函数。<br>
+        3.之后关于光程和振幅光强的函数架构与矩孔衍射基本相似，在此也不多做赘述。<br>
+        4.定义了
+        fresnel_diffraction(R,b,rho)函数R为点光源到圆孔距离，b为衍射屏到观察屏距离，rho为圆孔半径，在衍
+        射屏上产生边长为2rho的正方形网格，带入相关函数后再用matplotlib绘图即可。这里我带入了点光源距离1m，衍射屏与观察屏
+        相距4m，圆孔半径0.5mm的衍射情况<img moz-do-not-send="true"
+          src="images/Figure_2.png" alt="" align="left" width="600"
+          height="300"><br>
+        5.我同样用了PIL库进行了光强图的绘制，方法同上。<br>
+        <font size="+1">3.创新性描述<br>
+        </font>程序完全由本人完成。在模拟衍射中通过函数的模块化设计，可以更方便地通过输入不同的参数来模拟不同尺寸、形状的模型、不
+        同波长的光波的衍射情况。而且我设计的diffraction函数可以返回振幅分布的情况，这样就可以通过多个函数叠加的方法实现多孔、
+        光栅衍射的光强分布情况，扩展了可以解决的实际问题的范围。<br>
+        <br>
+        <font size="+1">4.运行方法和参数设置<br>
+        </font>由于我已经引用函数以方便讲解，程序可以直接运行。程序分别先后画出矩孔衍射和菲涅尔衍射的两个图，第一个耗时约30S，
+        第二个大概需要1-2分钟。<br>
+        <font size="+1"></font><font size="+1"></font><font size="+2"><font
+            size="+1">5.学习心得和收获</font></font><br>
+        在写菲涅尔衍射部分是用到了开平方根的操作，用math函数包的sqrt一直会报错，后来发现是因为开根对象中有数组对象，不能用
+        math包中的函数，改成了np.sqrt后将问题解决了，思考：虽然在python中相比较于C定义变量的类型这样的操作被大大简化，
+        自由度更高，但是使用一些函数包时还是要注意是否能对特定类型的变量使用，选择恰当的函数包的函数。同时在我进行振幅计算时用到了循环，
+        也发现了在循环次数非常多的情况下会花费很多的时间，效率较差。<br>
+        <font size="+1">6.参考资料</font><br>
+        1.此大作业物理原理部分参考了赵凯华老师的《光学（重排本）》<br>
+        2.程序编写部分参考了一些老师的讲义<br>
+        3.CSDN上关于 matplotlib的具体用法（<a
+          href="https://blog.csdn.net/weixin_44560088/article/details/105906252">Matplotlib
+
+
+          画几种三维图_帅兄心安否的博客-CSDN博客</a>，<a
+          href="https://blog.csdn.net/sinat_36772813/article/details/77365296">matplotlib
+
+
+          模块数据可视化-3D图_sinat_36772813的博客-CSDN博客</a>）<br>
+      </div>
+    </div>
+  </body>
+</html>
